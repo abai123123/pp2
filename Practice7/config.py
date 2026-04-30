@@ -1,4 +1,4 @@
 host = "localhost"
-database = "gibra"
+database = "phonebook_db"
 user = "postgres"
-password = "2008"
+password = "abai2007."

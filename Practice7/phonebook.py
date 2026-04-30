@@ -6,11 +6,11 @@ def insert_from_csv(filename):
     conn = connect()
     cur = conn.cursor()
 
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         reader = csv.reader(f)
         for row in reader:
             cur.execute(
-                "INSERT INTO phonebook (first_name, phone) VALUES (%s, %s) ON CONFLICT (phone) DO NOTHING",
+                "INSERT INTO contacts (name, phone) VALUES (%s, %s) ON CONFLICT (phone) DO NOTHING",
                 (row[0], row[1])
             )
 
@@ -29,7 +29,7 @@ def insert_from_console():
     cur = conn.cursor()
 
     cur.execute(
-        "INSERT INTO phonebook (first_name, phone) VALUES (%s, %s)",
+        "INSERT INTO contacts (name, phone) VALUES (%s, %s)",
         (name, phone)
     )
 
@@ -50,13 +50,13 @@ def update_contact():
 
     if new_name:
         cur.execute(
-            "UPDATE phonebook SET first_name = %s WHERE phone = %s",
+            "UPDATE contacts SET name = %s WHERE phone = %s",
             (new_name, old_phone)
         )
 
     if new_phone:
         cur.execute(
-            "UPDATE phonebook SET phone = %s WHERE phone = %s",
+            "UPDATE contacts SET phone = %s WHERE phone = %s",
             (new_phone, old_phone)
         )
 
@@ -78,19 +78,19 @@ def query_contacts():
     cur = conn.cursor()
 
     if choice == "1":
-        cur.execute("SELECT * FROM phonebook")
+        cur.execute("SELECT * FROM contacts")
 
     elif choice == "2":
         name = input("Enter name: ")
         cur.execute(
-            "SELECT * FROM phonebook WHERE first_name ILIKE %s",
+            "SELECT * FROM contacts WHERE name ILIKE %s",
             ('%' + name + '%',)
         )
 
     elif choice == "3":
         prefix = input("Enter prefix: ")
         cur.execute(
-            "SELECT * FROM phonebook WHERE phone LIKE %s",
+            "SELECT * FROM contacts WHERE phone LIKE %s",
             (prefix + '%',)
         )
 
@@ -112,14 +112,14 @@ def delete_contact():
     if choice == "1":
         name = input("Enter name: ")
         cur.execute(
-            "DELETE FROM phonebook WHERE first_name = %s",
+            "DELETE FROM contacts WHERE name = %s",
             (name,)
         )
 
     elif choice == "2":
         phone = input("Enter phone: ")
         cur.execute(
-            "DELETE FROM phonebook WHERE phone = %s",
+            "DELETE FROM contacts WHERE phone = %s",
             (phone,)
         )
 
@@ -128,6 +128,8 @@ def delete_contact():
     conn.close()
     print("Contact deleted!")
 
+
+# MAIN MENU
 while True:
     print("\n1. Insert from CSV")
     print("2. Add contact")
@@ -139,7 +141,7 @@ while True:
     choice = input("Choose: ")
 
     if choice == "1":
-        insert_from_csv("C:/Users/kossh/OneDrive/Документы/GitHub/PP2/Practice7/contacts.csv")
+        insert_from_csv("contacts.csv")
     elif choice == "2":
         insert_from_console()
     elif choice == "3":

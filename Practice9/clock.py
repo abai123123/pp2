@@ -3,32 +3,40 @@ import datetime
 
 pygame.init()
 
-# размер окна
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Mickey Clock")
 
 clock = pygame.time.Clock()
 
-# загрузка изображений
 background = pygame.image.load("mainclock.png").convert()
 right_hand = pygame.image.load("rightarm.png").convert_alpha()
 left_hand = pygame.image.load("leftarm.png").convert_alpha()
 
-# масштабирование
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 right_hand = pygame.transform.scale(right_hand, (250, 250))
 left_hand = pygame.transform.scale(left_hand, (250, 250))
 
-# центр часов
 center = (WIDTH // 2, HEIGHT // 2)
 
-
-def rotate(image, angle, center):
+def rotate_hand(image, angle, pivot, hand_start):
     rotated = pygame.transform.rotate(image, angle)
-    rect = rotated.get_rect(center=center)
-    return rotated, rect
 
+    image_center = pygame.math.Vector2(
+        image.get_width() / 2,
+        image.get_height() / 2
+    )
+
+    hand_start = pygame.math.Vector2(hand_start)
+
+    offset = image_center - hand_start
+    rotated_offset = offset.rotate(-angle)
+
+    rect = rotated.get_rect(
+        center=(pivot[0] + rotated_offset.x, pivot[1] + rotated_offset.y)
+    )
+
+    return rotated, rect
 
 running = True
 while running:
@@ -36,27 +44,26 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # текущее время
     now = datetime.datetime.now()
     minutes = now.minute
     seconds = now.second
+    micro = now.microsecond
 
-    # углы (360/60 = 6 градусов)
-    minute_angle = -minutes * 6
-    second_angle = -seconds * 6
+    minute_angle = 90 - (minutes + seconds / 60) * 6
+    second_angle = 90 - (seconds + micro / 1000000) * 6
 
-    # фон
     screen.blit(background, (0, 0))
 
-    # вращение
-    right_rot, right_rect = rotate(right_hand, minute_angle, center)
-    left_rot, left_rect = rotate(left_hand, second_angle, center)
+    right_start = (230, 10)
+    left_start = (0, 0)
 
-    # рисуем
+    right_rot, right_rect = rotate_hand(right_hand, minute_angle, center, right_start)
+    left_rot, left_rect = rotate_hand(left_hand, second_angle, center, left_start)
+
     screen.blit(right_rot, right_rect)
     screen.blit(left_rot, left_rect)
 
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(120)
 
 pygame.quit()
