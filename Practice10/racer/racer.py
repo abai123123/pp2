@@ -23,7 +23,7 @@ font = pygame.font.SysFont("Verdana", 60)
 font_small = pygame.font.SysFont("Verdana", 20)
 game_over = font.render("Game Over", True, BLACK)
 
-background = pygame.image.load("AnimatedStreet.png")
+background = pygame.image.load("racer/AnimatedStreet.png")
 
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Game")
@@ -32,7 +32,7 @@ pygame.display.set_caption("Game")
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Enemy.png")
+        self.image = pygame.image.load("racer/Enemy.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
 
@@ -49,7 +49,7 @@ class Enemy(pygame.sprite.Sprite):
 class Coin(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Coin.png").convert_alpha()
+        self.image = pygame.image.load("racer/Coin.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
@@ -65,7 +65,7 @@ class Coin(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Player.png")
+        self.image = pygame.image.load("racer/Player.png")
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
 
@@ -122,7 +122,7 @@ while True:
         entity.move()
 
     if pygame.sprite.spritecollideany(P1, enemies):
-        pygame.mixer.Sound("crash.wav").play()
+        pygame.mixer.Sound("racer/crash.wav").play()
         time.sleep(0.5)
 
         DISPLAYSURF.fill(RED)
@@ -139,7 +139,7 @@ while True:
 
     if pygame.sprite.spritecollideany(P1, coins):
         COIN += 1
-        pygame.mixer.Sound("coins.wav").play()
+        pygame.mixer.Sound("racer/coins.wav").play()
         C1.rect.top = 0
         C1.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
 
